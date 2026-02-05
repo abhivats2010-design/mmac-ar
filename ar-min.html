@@ -1,0 +1,94 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>MMAC AR (Minimal)</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image.prod.js"></script>
+  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+
+  <style>
+    body { margin:0; font-family: system-ui, Arial; }
+    #btn {
+      position: fixed; z-index: 99999; left: 50%; top: 50%;
+      transform: translate(-50%,-50%);
+      padding: 14px 18px; border-radius: 14px; border: 0;
+      background: #111827; color: #fff; font-weight: 800; font-size: 16px;
+    }
+    #hint { position: fixed; z-index: 99999; left: 50%; top: calc(50% + 56px);
+      transform: translateX(-50%); color:#374151; font-size: 13px; text-align:center; }
+  </style>
+</head>
+
+<body>
+  <button id="btn">Start AR</button>
+  <div id="hint">Allow Camera • Point at visiting card</div>
+
+  <a-scene
+    embedded
+    vr-mode-ui="enabled:false"
+    device-orientation-permission-ui="enabled:false"
+    mindar-image="imageTargetSrc: targets.mind; autoStart:false; uiScanning:true; uiLoading:true;"
+  >
+    <a-camera position="0 0 0" look-controls="enabled:false"></a-camera>
+
+    <a-entity mindar-image-target="targetIndex: 0">
+      <a-image src="logo.png" position="0 0.35 0" width="0.95" height="0.42"></a-image>
+
+      <a-entity position="0 -0.28 0">
+        <a-entity position="-0.52 0 0">
+          <a-plane width="0.36" height="0.36" opacity="0.001"
+            link="href: https://www.instagram.com/COMPANYNAME; target: _blank"></a-plane>
+          <a-image src="instagram.png" width="0.28" height="0.28" position="0 0 0.001"></a-image>
+        </a-entity>
+
+        <a-entity position="0 0 0">
+          <a-plane width="0.36" height="0.36" opacity="0.001"
+            link="href: https://www.linkedin.com/company/COMPANYNAME; target: _blank"></a-plane>
+          <a-image src="linkedin.png" width="0.28" height="0.28" position="0 0 0.001"></a-image>
+        </a-entity>
+
+        <a-entity position="0.52 0 0">
+          <a-plane width="0.36" height="0.36" opacity="0.001"
+            link="href: https://www.facebook.com/COMPANYNAME; target: _blank"></a-plane>
+          <a-image src="facebook.png" width="0.28" height="0.28" position="0 0 0.001"></a-image>
+        </a-entity>
+      </a-entity>
+    </a-entity>
+  </a-scene>
+
+  <script>
+    const btn = document.getElementById('btn');
+    const hint = document.getElementById('hint');
+    const sceneEl = document.querySelector('a-scene');
+
+    async function waitSceneLoaded() {
+      if (sceneEl.hasLoaded) return;
+      await new Promise(res => sceneEl.addEventListener('loaded', res, { once:true }));
+    }
+
+    btn.addEventListener('click', async () => {
+      btn.disabled = true;
+
+      try {
+        await waitSceneLoaded();
+
+        // Force iOS/desktop to show permission prompt (user gesture)
+        const s = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+        s.getTracks().forEach(t => t.stop());
+
+        const mindar = sceneEl.systems["mindar-image-system"];
+        await mindar.start();
+
+        btn.style.display = 'none';
+        hint.style.display = 'none';
+      } catch (e) {
+        console.error(e);
+        btn.disabled = false;
+        hint.innerText = "Camera blocked. Open in Safari/Chrome and Allow Camera.";
+      }
+    });
+  </script>
+</body>
+</html>
