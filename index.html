@@ -42,7 +42,6 @@
   <main class="wrap" id="landing">
     <div class="logoBox"><img src="logo.png" alt="MMAC Logo"></div>
 
-    <!-- Tagline (you can edit this line) -->
     <h1>Designing premium hotel &amp; airport lounge experiences</h1>
 
     <button class="btn" id="startBtn">Start AR</button>
@@ -75,18 +74,14 @@
       vr-mode-ui="enabled: false"
       device-orientation-permission-ui="enabled: false"
       renderer="colorManagement: true; physicallyCorrectLights: true;"
-      mindar-image="imageTargetSrc: targets.mind; filterMinCF:0.001; filterBeta: 0.001; autoStart: true; uiScanning: yes; uiLoading: yes;"
+      mindar-image="imageTargetSrc: targets.mind; filterMinCF:0.001; filterBeta:0.001; autoStart: false; uiScanning: yes; uiLoading: yes;"
     >
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-      <!-- Anchor to target 0 -->
       <a-entity mindar-image-target="targetIndex: 0">
-        <!-- Logo (signage-like) -->
         <a-image src="logo.png" position="0 0.35 0" width="0.95" height="0.42"></a-image>
 
-        <!-- Tap-friendly icon row (icons are 2D but FLOAT in real space) -->
         <a-entity position="0 -0.28 0">
-          <!-- Bigger invisible hit-areas + icon on top -->
           <a-entity position="-0.52 0 0">
             <a-plane width="0.36" height="0.36" opacity="0.001"
               link="href: https://www.instagram.com/COMPANYNAME; title: Instagram; target: _blank"></a-plane>
@@ -116,32 +111,39 @@
     const exitBtn = document.getElementById('exitBtn');
     const fallback = document.getElementById('fallback');
 
+    const sceneEl = document.querySelector('a-scene');
+
     function showFallback() {
       fallback.style.display = 'block';
     }
 
     startBtn.addEventListener('click', async () => {
-      // Basic support check
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
         showFallback();
         return;
       }
-      // Enter AR
+
+      // show AR UI first (then start)
       arLayer.style.display = 'block';
       topBar.style.display = 'flex';
 
-      // Small delay helps some mobiles before requesting camera
-      setTimeout(() => {
-        // MindAR autoStart is enabled; scene will request camera itself
-      }, 120);
+      try {
+        const mindarSystem = sceneEl.systems["mindar-image-system"];
+        await mindarSystem.start();   // <-- THIS triggers camera on user tap
+      } catch (e) {
+        console.error(e);
+        showFallback();
+      }
     });
 
-    exitBtn.addEventListener('click', () => {
-      // Hard stop: reload back to landing (releases camera reliably)
+    exitBtn.addEventListener('click', async () => {
+      try {
+        const mindarSystem = sceneEl.systems["mindar-image-system"];
+        await mindarSystem.stop();
+      } catch (e) {}
       location.reload();
     });
 
-    // If page is opened in insecure context, camera won’t work
     if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
       showFallback();
       fallback.insertAdjacentHTML('afterbegin',
