@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>MMAC AR Demo</title>
+
+  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+
+  <style>
+    body { margin:0; }
+    #btn {
+      position: fixed; z-index: 9999;
+      left: 50%; top: 50%;
+      transform: translate(-50%,-50%);
+      padding: 14px 20px;
+      background: #111827;
+      color: white;
+      font-weight: 800;
+      border-radius: 14px;
+      border: none;
+      font-size: 16px;
+    }
+  </style>
+</head>
+
+<body>
+  <button id="btn">Start AR Demo</button>
+
+  <a-scene embedded vr-mode-ui="enabled:false">
+    <a-camera position="0 0 0"></a-camera>
+
+    <!-- Floating logo -->
+    <a-image src="logo.png"
+             position="0 0 -1"
+             width="0.9"
+             height="0.4">
+    </a-image>
+  </a-scene>
+
+  <script>
+    const btn = document.getElementById('btn');
+    btn.onclick = async () => {
+      try {
+        const s = await navigator.mediaDevices.getUserMedia({ video: true });
+        s.getTracks().forEach(t => t.stop());
+        btn.style.display = 'none';
+      } catch (e) {
+        alert("Camera blocked");
+      }
+    };
+  </script>
+</body>
+</html>
