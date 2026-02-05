@@ -7,100 +7,184 @@
 
   <style>
     :root{
-      --bg:#0b1220;
-      --card:rgba(255,255,255,0.06);
-      --border:rgba(255,255,255,0.12);
+      --bg:#070b14;
+      --card: rgba(255,255,255,0.06);
+      --border: rgba(255,255,255,0.10);
       --text:#f9fafb;
-      --muted:rgba(255,255,255,0.72);
+      --muted: rgba(255,255,255,0.72);
+
       --btn:#ffffff;
       --btnText:#0b1220;
-      --btn2:rgba(255,255,255,0.10);
+
+      --btn2: rgba(255,255,255,0.08);
+      --btn2Border: rgba(255,255,255,0.14);
+
+      --shadow: 0 24px 70px rgba(0,0,0,0.45);
     }
+
     *{box-sizing:border-box}
+    html,body{height:100%}
     body{
-      margin:0; min-height:100vh;
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;
-      background: radial-gradient(1200px 700px at 20% 10%, rgba(255,140,0,0.18), transparent 55%),
-                  radial-gradient(900px 600px at 85% 40%, rgba(59,130,246,0.16), transparent 55%),
-                  var(--bg);
-      color:var(--text);
-      display:flex; justify-content:center;
-      padding:28px 16px;
+      margin:0;
+      font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial;
+      color: var(--text);
+      background:
+        radial-gradient(900px 520px at 18% 10%, rgba(255,140,0,0.16), transparent 55%),
+        radial-gradient(900px 520px at 88% 30%, rgba(59,130,246,0.14), transparent 55%),
+        radial-gradient(900px 520px at 50% 95%, rgba(16,185,129,0.10), transparent 55%),
+        var(--bg);
+      display:flex;
+      justify-content:center;
+      padding: 26px 16px;
     }
+
     .wrap{width:min(520px, 100%);}
+
     .card{
-      background:var(--card);
-      border:1px solid var(--border);
-      border-radius:22px;
-      padding:22px 18px;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 26px;
+      padding: 22px 18px 18px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: var(--shadow);
+      position: relative;
+      overflow: hidden;
     }
-    .logo{
-      display:flex; justify-content:center;
-      margin:10px 0 14px;
+
+    /* subtle shine */
+    .card:before{
+      content:"";
+      position:absolute; inset:-120px -140px auto auto;
+      width: 320px; height: 320px;
+      background: radial-gradient(circle, rgba(255,255,255,0.10), transparent 60%);
+      transform: rotate(20deg);
+      pointer-events:none;
     }
-    .logo img{width:min(240px,60vw); height:auto; filter: drop-shadow(0 14px 25px rgba(0,0,0,0.35));}
-    h1{margin:0; font-size:20px; line-height:1.35; text-align:center; font-weight:800;}
-    p{margin:10px 0 0; color:var(--muted); text-align:center; line-height:1.45; font-size:14px;}
-    .btns{display:flex; flex-direction:column; gap:12px; margin-top:18px;}
+
+    .logoWrap{
+      display:flex;
+      justify-content:center;
+      margin-top: 6px;
+      margin-bottom: 14px;
+    }
+
+    .logoBox{
+      width: min(240px, 64vw);
+      border-radius: 22px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.10);
+      padding: 14px;
+      box-shadow: 0 18px 40px rgba(0,0,0,0.35);
+    }
+
+    .logoBox img{
+      width: 100%;
+      height: auto;
+      display:block;
+      filter: drop-shadow(0 14px 28px rgba(0,0,0,0.35));
+    }
+
+    h1{
+      margin: 0;
+      text-align:center;
+      font-size: 22px;
+      line-height: 1.25;
+      font-weight: 900;
+      letter-spacing: 0.2px;
+    }
+
+    .tagline{
+      margin: 10px 0 0;
+      text-align:center;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .divider{
+      height:1px;
+      background: rgba(255,255,255,0.10);
+      margin: 18px 0;
+    }
+
+    .btns{display:flex; flex-direction:column; gap: 12px;}
+
     .btn{
-      height:54px; border-radius:16px; border:0;
-      font-weight:900; font-size:16px;
-      cursor:pointer;
+      height: 54px;
+      border-radius: 16px;
+      border: 0;
+      font-weight: 900;
+      font-size: 16px;
+      cursor: pointer;
+      width: 100%;
+      transition: transform .08s ease, opacity .08s ease;
     }
-    .primary{
-      background:var(--btn); color:var(--btnText);
-    }
+    .btn:active{ transform: scale(0.99); opacity: 0.96; }
+
+    .primary{ background: var(--btn); color: var(--btnText); }
     .secondary{
-      background:var(--btn2); color:var(--text);
-      border:1px solid var(--border);
+      background: var(--btn2);
+      color: var(--text);
+      border: 1px solid var(--btn2Border);
     }
-    .socialRow{display:flex; gap:10px; margin-top:14px; justify-content:center;}
+
+    .socialRow{
+      display:flex;
+      justify-content:center;
+      gap: 12px;
+      margin-top: 16px;
+    }
     .social{
-      width:52px; height:52px; border-radius:16px;
+      width: 54px; height: 54px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.92);
+      border: 1px solid rgba(0,0,0,0.08);
       display:flex; align-items:center; justify-content:center;
-      background:rgba(255,255,255,0.92);
-      border:1px solid rgba(0,0,0,0.08);
       text-decoration:none;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.25);
+      transition: transform .10s ease;
     }
-    .social img{width:28px; height:28px;}
-    .note{margin-top:14px; font-size:12px; color:rgba(255,255,255,0.65); text-align:center;}
-    .tiny{margin-top:6px; font-size:12px; color:rgba(255,255,255,0.55); text-align:center;}
-    .divider{height:1px; background:rgba(255,255,255,0.10); margin:16px 0;}
-    .chips{display:flex; gap:8px; flex-wrap:wrap; justify-content:center;}
-    .chip{
-      padding:8px 10px; border-radius:999px;
-      border:1px solid rgba(255,255,255,0.12);
-      background:rgba(255,255,255,0.06);
-      font-size:12px; color:rgba(255,255,255,0.78);
+    .social:active{ transform: scale(0.98); }
+    .social img{ width: 30px; height: 30px; }
+
+    .note{
+      margin-top: 14px;
+      text-align:center;
+      font-size: 12px;
+      color: rgba(255,255,255,0.65);
+    }
+    .tiny{
+      margin-top: 6px;
+      text-align:center;
+      font-size: 12px;
+      color: rgba(255,255,255,0.55);
     }
   </style>
 </head>
+
 <body>
   <div class="wrap">
     <div class="card">
-      <div class="logo"><img src="logo.png" alt="MMAC Logo"></div>
+      <div class="logoWrap">
+        <div class="logoBox">
+          <img src="logo.png" alt="MMAC Logo">
+        </div>
+      </div>
 
       <h1>MMAC Design Associates</h1>
-      <p>Commercial interiors for <b>Hotels</b> &amp; <b>Airport Lounges</b> — concept to execution.</p>
+
+      <p class="tagline">
+        Commercial interiors for <b>Hotels</b> &amp; <b>Airport Lounges</b> — concept to execution.
+      </p>
 
       <div class="divider"></div>
 
-      <div class="chips">
-        <div class="chip">Hotel Interiors</div>
-        <div class="chip">Airport Lounge Design</div>
-        <div class="chip">Concept &amp; Visualization</div>
-        <div class="chip">Fit-out Support</div>
-      </div>
-
       <div class="btns">
-        <!-- AR demo button (your working overlay page) -->
-        <button class="btn primary" onclick="location.href='ar-overlay.html?v=1'">
+        <button class="btn primary" onclick="location.href='ar-overlay.html?v=2'">
           Try AR Demo
         </button>
 
-        <!-- Optional: portfolio link (replace later if you want) -->
         <button class="btn secondary" onclick="location.href='https://www.mmac-associates.com'">
           Visit Website
         </button>
