@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Camera Test</title>
+</head>
+<body style="font-family:Arial; padding:20px">
+  <h2>Camera Permission Test</h2>
+  <button onclick="startCam()">Start Camera</button>
+  <p id="status"></p>
+
+  <script>
+    async function startCam() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: "environment" },
+          audio: false
+        });
+        document.getElementById("status").innerText = "✅ Camera permission GRANTED";
+        stream.getTracks().forEach(t => t.stop());
+      } catch (e) {
+        document.getElementById("status").innerText =
+          "❌ Camera ERROR: " + e.name;
+        console.error(e);
+      }
+    }
+  </script>
+</body>
+</html>
