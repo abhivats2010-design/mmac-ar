@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>MMAC • Scan to Connect</title>
+
+  <!-- MindAR + A-Frame (WebAR) -->
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image.prod.js"></script>
+  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+
+  <style>
+    :root {
+      --bg:#ffffff; --text:#111827; --muted:#6b7280;
+      --btn:#111827; --btnText:#ffffff; --card:#f3f4f6; --border:#111827;
+    }
+    html,body{height:100%;}
+    body{margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial; background:var(--bg); color:var(--text);}
+    .wrap{max-width:520px; margin:0 auto; padding:28px 18px 22px;}
+    .logoBox{display:flex; justify-content:center; margin:18px 0 14px;}
+    .logoBox img{width:min(240px,60vw); height:auto;}
+    h1{font-size:18px; line-height:1.35; text-align:center; margin:0 0 18px; font-weight:650;}
+    .btn{display:flex; align-items:center; justify-content:center; height:54px; border-radius:16px;
+          background:var(--btn); color:var(--btnText); text-decoration:none; font-size:16px; font-weight:750; border:0; width:100%;}
+    .hint{text-align:center; color:var(--muted); font-size:13px; margin-top:14px; line-height:1.35;}
+    .small{text-align:center; color:var(--muted); font-size:12px; margin-top:8px;}
+    .foot{text-align:center; color:var(--muted); font-size:12px; margin-top:22px;}
+    /* AR fullscreen container */
+    #arLayer{position:fixed; inset:0; display:none; background:#000; z-index:9999;}
+    #topBar{position:fixed; top:14px; left:14px; right:14px; z-index:10000;
+            display:none; gap:10px; align-items:center; justify-content:space-between;}
+    #topBar .pill{background:rgba(17,24,39,0.9); color:#fff; padding:10px 14px; border-radius:999px; font-size:13px;}
+    #topBar button{background:rgba(17,24,39,0.9); color:#fff; border:0; padding:10px 14px; border-radius:999px; font-weight:700;}
+    /* Fallback */
+    .fallback{display:none; margin-top:14px; background:var(--card); border:2px solid var(--border); border-radius:16px; padding:14px;}
+    .fallback a{display:block; text-decoration:none; color:var(--text); font-weight:700; padding:10px 12px; border-radius:12px; background:#fff; border:1px solid #e5e7eb; margin-top:10px; text-align:center;}
+  </style>
+</head>
+
+<body>
+  <!-- Landing -->
+  <main class="wrap" id="landing">
+    <div class="logoBox"><img src="logo.png" alt="MMAC Logo"></div>
+
+    <!-- Tagline (you can edit this line) -->
+    <h1>Designing premium hotel &amp; airport lounge experiences</h1>
+
+    <button class="btn" id="startBtn">Start AR</button>
+
+    <div class="hint">Allow camera access when prompted.<br/>Point your camera at the visiting card.</div>
+    <div class="small">(No app needed)</div>
+
+    <div class="fallback" id="fallback">
+      <div style="font-weight:800; margin-bottom:6px;">AR not available on this device.</div>
+      <div style="color:var(--muted); font-size:13px; line-height:1.35;">
+        You can still connect using the links below.
+      </div>
+      <a id="igLink" href="https://www.instagram.com/COMPANYNAME" target="_blank" rel="noopener">Instagram</a>
+      <a id="inLink" href="https://www.linkedin.com/company/COMPANYNAME" target="_blank" rel="noopener">LinkedIn</a>
+      <a id="fbLink" href="https://www.facebook.com/COMPANYNAME" target="_blank" rel="noopener">Facebook</a>
+    </div>
+
+    <div class="foot">Scan. Connect. Experience our work.</div>
+  </main>
+
+  <!-- AR Layer -->
+  <div id="arLayer">
+    <div id="topBar">
+      <div class="pill">AR Active • Keep the card in view</div>
+      <button id="exitBtn">Exit</button>
+    </div>
+
+    <a-scene
+      embedded
+      vr-mode-ui="enabled: false"
+      device-orientation-permission-ui="enabled: false"
+      renderer="colorManagement: true; physicallyCorrectLights: true;"
+      mindar-image="imageTargetSrc: targets.mind; filterMinCF:0.001; filterBeta: 0.001; autoStart: true; uiScanning: yes; uiLoading: yes;"
+    >
+      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
+      <!-- Anchor to target 0 -->
+      <a-entity mindar-image-target="targetIndex: 0">
+        <!-- Logo (signage-like) -->
+        <a-image src="logo.png" position="0 0.35 0" width="0.95" height="0.42"></a-image>
+
+        <!-- Tap-friendly icon row (icons are 2D but FLOAT in real space) -->
+        <a-entity position="0 -0.28 0">
+          <!-- Bigger invisible hit-areas + icon on top -->
+          <a-entity position="-0.52 0 0">
+            <a-plane width="0.36" height="0.36" opacity="0.001"
+              link="href: https://www.instagram.com/COMPANYNAME; title: Instagram; target: _blank"></a-plane>
+            <a-image src="instagram.png" width="0.28" height="0.28" position="0 0 0.001"></a-image>
+          </a-entity>
+
+          <a-entity position="0 0 0">
+            <a-plane width="0.36" height="0.36" opacity="0.001"
+              link="href: https://www.linkedin.com/company/COMPANYNAME; title: LinkedIn; target: _blank"></a-plane>
+            <a-image src="linkedin.png" width="0.28" height="0.28" position="0 0 0.001"></a-image>
+          </a-entity>
+
+          <a-entity position="0.52 0 0">
+            <a-plane width="0.36" height="0.36" opacity="0.001"
+              link="href: https://www.facebook.com/COMPANYNAME; title: Facebook; target: _blank"></a-plane>
+            <a-image src="facebook.png" width="0.28" height="0.28" position="0 0 0.001"></a-image>
+          </a-entity>
+        </a-entity>
+      </a-entity>
+    </a-scene>
+  </div>
+
+  <script>
+    const startBtn = document.getElementById('startBtn');
+    const arLayer = document.getElementById('arLayer');
+    const topBar = document.getElementById('topBar');
+    const exitBtn = document.getElementById('exitBtn');
+    const fallback = document.getElementById('fallback');
+
+    function showFallback() {
+      fallback.style.display = 'block';
+    }
+
+    startBtn.addEventListener('click', async () => {
+      // Basic support check
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        showFallback();
+        return;
+      }
+      // Enter AR
+      arLayer.style.display = 'block';
+      topBar.style.display = 'flex';
+
+      // Small delay helps some mobiles before requesting camera
+      setTimeout(() => {
+        // MindAR autoStart is enabled; scene will request camera itself
+      }, 120);
+    });
+
+    exitBtn.addEventListener('click', () => {
+      // Hard stop: reload back to landing (releases camera reliably)
+      location.reload();
+    });
+
+    // If page is opened in insecure context, camera won’t work
+    if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
+      showFallback();
+      fallback.insertAdjacentHTML('afterbegin',
+        '<div style="color:#b91c1c; font-weight:800; margin-bottom:8px;">Camera requires HTTPS hosting.</div>');
+    }
+  </script>
+</body>
+</html>
